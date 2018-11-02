@@ -12,11 +12,16 @@ class ListViewController: UITableViewController {
 
     var itemArray = ["get third app in app store", "find a great job", "move to Colorado"]
     
+    let defaults = UserDefaults.standard
+    
     @IBAction func addItem(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Done", style: .default) { (action) in
             self.itemArray.append(textField.text!)
+            
+            self.defaults.set(self.itemArray, forKey: "ItemArray")
+            
             self.tableView.reloadData()
         }
         
@@ -31,6 +36,10 @@ class ListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if let items = UserDefaults.standard.array(forKey: "ItemArray") as? [String] {
+            itemArray = items
+        }
         
         // Do any additional setup after loading the view, typically from a nib.
     }
