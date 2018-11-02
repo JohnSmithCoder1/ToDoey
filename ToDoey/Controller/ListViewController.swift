@@ -9,8 +9,8 @@
 import UIKit
 
 class ListViewController: UITableViewController {
-
-    var itemArray = ["get third app in app store", "find a great job", "move to Colorado"]
+    
+    var itemArray = [Item]()
     
     let defaults = UserDefaults.standard
     
@@ -18,7 +18,10 @@ class ListViewController: UITableViewController {
         var textField = UITextField()
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Done", style: .default) { (action) in
-            self.itemArray.append(textField.text!)
+            let newItem = Item()
+            newItem.description = textField.text!
+            
+            self.itemArray.append(newItem)
             
             self.defaults.set(self.itemArray, forKey: "ItemArray")
             
@@ -37,11 +40,13 @@ class ListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let items = UserDefaults.standard.array(forKey: "ItemArray") as? [String] {
+        let newItem = Item()
+        newItem.description = "get third app in app store"
+        itemArray.append(newItem)
+        
+        if let items = UserDefaults.standard.array(forKey: "ItemArray") as? [Item] {
             itemArray = items
         }
-        
-        // Do any additional setup after loading the view, typically from a nib.
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -50,22 +55,26 @@ class ListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        cell.textLabel?.text = itemArray[indexPath.row]
+        let item = itemArray[indexPath.row]
+        cell.textLabel?.text = item.description
+        
+        if item.isChecked == true {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
         
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) {
-            if cell.accessoryType == .none {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
-        }
+        
+        itemArray[indexPath.row].isChecked = !itemArray[indexPath.row].isChecked
+        
+        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
-
+    
+    
 }
 
