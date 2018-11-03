@@ -12,6 +12,8 @@ class ListViewController: UITableViewController {
     
     var itemArray = [Item]()
     
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
     let defaults = UserDefaults.standard
     
     @IBAction func addItem(_ sender: UIBarButtonItem) {
@@ -23,8 +25,15 @@ class ListViewController: UITableViewController {
             
             self.itemArray.append(newItem)
             
-            self.defaults.set(self.itemArray, forKey: "ItemArray")
+            let encoder = PropertyListEncoder()
             
+            do {
+                let data = try encoder.encode(self.itemArray)
+                try data.write(to: self.dataFilePath!)
+            } catch {
+                print("Error encoding item array: \(error)")
+            }
+                
             self.tableView.reloadData()
         }
         
@@ -39,6 +48,8 @@ class ListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print(dataFilePath!)
         
         let newItem = Item()
         newItem.description = "get third app in app store"
