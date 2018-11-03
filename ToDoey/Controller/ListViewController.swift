@@ -9,9 +9,7 @@
 import UIKit
 
 class ListViewController: UITableViewController {
-    
     var itemArray = [Item]()
-    
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     @IBAction func addItem(_ sender: UIBarButtonItem) {
@@ -20,12 +18,10 @@ class ListViewController: UITableViewController {
         let action = UIAlertAction(title: "Done", style: .default) { (action) in
             let newItem = Item()
             newItem.description = textField.text!
-            
             self.itemArray.append(newItem)
-            
             self.saveItems()
         }
-        
+    
         alert.addTextField { (alertTextField) in
             alertTextField.placeholder = "Add new item here"
             textField = alertTextField
@@ -60,9 +56,7 @@ class ListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         itemArray[indexPath.row].isChecked = !itemArray[indexPath.row].isChecked
-        
         saveItems()
         tableView.deselectRow(at: indexPath, animated: true)
     }
