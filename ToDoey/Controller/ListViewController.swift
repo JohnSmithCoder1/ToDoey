@@ -14,8 +14,6 @@ class ListViewController: UITableViewController {
     
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
-    let defaults = UserDefaults.standard
-    
     @IBAction func addItem(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
@@ -39,16 +37,8 @@ class ListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         print(dataFilePath!)
-        
-        let newItem = Item()
-        newItem.description = "get third app in app store"
-        itemArray.append(newItem)
-        
-        if let items = UserDefaults.standard.array(forKey: "ItemArray") as? [Item] {
-            itemArray = items
-        }
+        loadItems()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -88,6 +78,17 @@ class ListViewController: UITableViewController {
         }
         
         tableView.reloadData()
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding item array: \(error)")
+            }
+        }
     }
 }
 
