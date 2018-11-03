@@ -17,7 +17,7 @@ class ListViewController: UITableViewController {
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Done", style: .default) { (action) in
             let newItem = Item()
-            newItem.description = textField.text!
+            newItem.itemDescription = textField.text!
             self.itemArray.append(newItem)
             self.saveItems()
         }
@@ -44,7 +44,7 @@ class ListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         let item = itemArray[indexPath.row]
-        cell.textLabel?.text = item.description
+        cell.textLabel?.text = item.itemDescription
         
         if item.isChecked == true {
             cell.accessoryType = .checkmark
