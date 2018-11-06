@@ -85,6 +85,7 @@ class ListViewController: UITableViewController {
     }
 }
 
+//MARK: - Search Bar Methods
 extension ListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let request: NSFetchRequest<Item> = Item.fetchRequest()
@@ -92,5 +93,11 @@ extension ListViewController: UISearchBarDelegate {
         request.sortDescriptors = [NSSortDescriptor(key: "itemDescription", ascending: true)]
         
         loadItems()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+        }
     }
 }
