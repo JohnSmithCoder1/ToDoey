@@ -17,7 +17,6 @@ class ListViewController: UITableViewController {
         }
     }
     
-    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     @IBAction func addItem(_ sender: UIBarButtonItem) {
@@ -28,6 +27,7 @@ class ListViewController: UITableViewController {
             let newItem = Item(context: self.context)
             newItem.itemDescription = textField.text!
             newItem.isChecked = false
+            newItem.parentCategory = self.selectedCategory
             self.items.append(newItem)
             self.saveItems()
         }
@@ -79,13 +79,20 @@ class ListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+        let categoryPredicate = NSPredicate(format: "parentCategory.categoryDescription MATCHES %@", (selectedCategory?.categoryDescription)!)
+        
+        if let additionalPredicat = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicat])
+        } else {
+            request.predicate = categoryPredicate
+        }
+        
         do {
             items = try context.fetch(request)
         } catch {
             print("Error fetching data from context: \(error)")
         }
-        
         tableView.reloadData()
     }
 }
@@ -94,10 +101,10 @@ class ListViewController: UITableViewController {
 extension ListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let request: NSFetchRequest<Item> = Item.fetchRequest()
-        request.predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@", searchBar.text!)
+        let predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@", searchBar.text!)
         request.sortDescriptors = [NSSortDescriptor(key: "itemDescription", ascending: true)]
         
-        loadItems(with: request)
+        loadItems(with: request, predicate: predicate)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -108,5 +115,4 @@ extension ListViewController: UISearchBarDelegate {
             }
         }
     }
-    
 }
