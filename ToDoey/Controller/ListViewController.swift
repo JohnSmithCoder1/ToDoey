@@ -92,12 +92,16 @@ extension ListViewController: UISearchBarDelegate {
         request.predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@", searchBar.text!)
         request.sortDescriptors = [NSSortDescriptor(key: "itemDescription", ascending: true)]
         
-        loadItems()
+        loadItems(with: request)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
             loadItems()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
         }
     }
+    
 }
