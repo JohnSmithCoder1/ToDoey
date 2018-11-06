@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--ToDoey-->
+        <!--Items-->
         <scene sceneID="JRo-9I-UYI">
             <objects>
                 <tableViewController id="u6y-PN-JRv" customClass="ListViewController" customModule="ToDoey" customModuleProvider="target" sceneMemberID="viewController">
@@ -40,7 +40,7 @@
                             <outlet property="delegate" destination="u6y-PN-JRv" id="Fc7-gP-omR"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="ToDoey" id="bLb-Vy-TZW">
+                    <navigationItem key="navigationItem" title="Items" id="bLb-Vy-TZW">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="B4h-F2-OHk">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
@@ -78,16 +78,16 @@
             </objects>
             <point key="canvasLocation" x="362" y="79"/>
         </scene>
-        <!--Table View Controller-->
+        <!--ToDoey-->
         <scene sceneID="lcv-Gu-ekt">
             <objects>
-                <tableViewController id="Z3c-Ke-0Z0" sceneMemberID="viewController">
+                <tableViewController id="Z3c-Ke-0Z0" customClass="CategoryViewController" customModule="ToDoey" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Dcl-At-J4W">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="4Yq-9g-9YF">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CategoryCell" id="4Yq-9g-9YF">
                                 <rect key="frame" x="0.0" y="28" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4Yq-9g-9YF" id="UuY-ok-Odm">
@@ -101,7 +101,14 @@
                             <outlet property="delegate" destination="Z3c-Ke-0Z0" id="kQV-L1-25g"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="S7k-Xq-uG9"/>
+                    <navigationItem key="navigationItem" title="ToDoey" id="S7k-Xq-uG9">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="1mY-hf-qh0">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="Z3c-Ke-0Z0" id="fgG-FG-DNo"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <segue destination="u6y-PN-JRv" kind="show" identifier="goToItems" id="RlJ-AX-6g9"/>
                     </connections>
