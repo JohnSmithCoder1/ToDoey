@@ -36,6 +36,7 @@ class ListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         loadItems()
     }
     
@@ -80,5 +81,24 @@ class ListViewController: UITableViewController {
         } catch {
             print("Error fetching data from context: \(error)")
         }
+    }
+}
+
+extension ListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        let predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@", searchBar.text!)
+        request.predicate = predicate
+        
+        let sortDescriptor = NSSortDescriptor(key: "itemDescription", ascending: true)
+        request.sortDescriptors = [sortDescriptor]
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context: \(error)")
+        }
+        
+        tableView.reloadData()
     }
 }
