@@ -26,7 +26,7 @@ class ListViewController: UITableViewController {
         }
         
         alert.addTextField { (alertTextField) in
-            alertTextField.placeholder = "Add new item here"
+            alertTextField.placeholder = "Add new item here..."
             textField = alertTextField
         }
         
