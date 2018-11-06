@@ -10,7 +10,14 @@ import UIKit
 import CoreData
 
 class ListViewController: UITableViewController {
-    var itemArray = [Item]()
+    var items = [Item]()
+    var selectedCategory: Category? {
+        didSet {
+            loadItems()
+        }
+    }
+    
+    
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     @IBAction func addItem(_ sender: UIBarButtonItem) {
@@ -21,7 +28,7 @@ class ListViewController: UITableViewController {
             let newItem = Item(context: self.context)
             newItem.itemDescription = textField.text!
             newItem.isChecked = false
-            self.itemArray.append(newItem)
+            self.items.append(newItem)
             self.saveItems()
         }
         
@@ -36,17 +43,15 @@ class ListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        loadItems()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return itemArray.count
+        return items.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        let item = itemArray[indexPath.row]
+        let item = items[indexPath.row]
         cell.textLabel?.text = item.itemDescription
         
         if item.isChecked == true {
@@ -59,7 +64,7 @@ class ListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        itemArray[indexPath.row].isChecked = !itemArray[indexPath.row].isChecked
+        items[indexPath.row].isChecked = !items[indexPath.row].isChecked
         saveItems()
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -76,7 +81,7 @@ class ListViewController: UITableViewController {
     
     func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         do {
-            itemArray = try context.fetch(request)
+            items = try context.fetch(request)
         } catch {
             print("Error fetching data from context: \(error)")
         }
