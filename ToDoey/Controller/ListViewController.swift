@@ -59,7 +59,6 @@ class ListViewController: UITableViewController {
         } else {
             cell.accessoryType = .none
         }
-        
         return cell
     }
     
@@ -75,7 +74,6 @@ class ListViewController: UITableViewController {
         } catch {
             print("Error saving context: \(error)")
         }
-        
         tableView.reloadData()
     }
     
