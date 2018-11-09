@@ -11,8 +11,7 @@ import RealmSwift
 
 class CategoryViewController: UITableViewController {
     let realm = try! Realm()
-    var categories = [Category]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var categories: Results<Category>?
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
@@ -21,7 +20,6 @@ class CategoryViewController: UITableViewController {
         let action = UIAlertAction(title: "Done", style: .default) { (action) in
             let newCategory = Category()
             newCategory.categoryDescription = textField.text!
-            self.categories.append(newCategory)
             self.save(category: newCategory)
         }
         
@@ -41,12 +39,12 @@ class CategoryViewController: UITableViewController {
     
     //MARK: - TableView DataSource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return categories?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        cell.textLabel?.text = categories[indexPath.row].categoryDescription
+        cell.textLabel?.text = categories?[indexPath.row].categoryDescription ?? "No Categories added yet"
         
         return cell
     }
@@ -72,12 +70,7 @@ class CategoryViewController: UITableViewController {
     }
     
     func loadCategories() {
-//        do {
-//            categories = try context.fetch(request)
-//        } catch {
-//            print("Error fetching data from context \(error)")
-//        }
-        
+        categories = realm.objects(Category.self)
         tableView.reloadData()
     }
     
@@ -85,7 +78,7 @@ class CategoryViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! ListViewController
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.selectedCategory = categories[indexPath.row]
+            destinationVC.selectedCategory = categories?[indexPath.row]
         }
     }
 }
