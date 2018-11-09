@@ -13,7 +13,7 @@ class ListViewController: UITableViewController {
     var items = [Item]()
     var selectedCategory: Category? {
         didSet {
-            loadItems()
+//            loadItems()
         }
     }
     
@@ -24,11 +24,11 @@ class ListViewController: UITableViewController {
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Done", style: .default) { (action) in
             
-            let newItem = Item(context: self.context)
-            newItem.itemDescription = textField.text!
-            newItem.isChecked = false
-            newItem.parentCategory = self.selectedCategory
-            self.items.append(newItem)
+//            let newItem = Item(context: self.context)
+//            newItem.itemDescription = textField.text!
+//            newItem.isChecked = false
+//            newItem.parentCategory = self.selectedCategory
+//            self.items.append(newItem)
             self.saveItems()
         }
         
@@ -77,40 +77,40 @@ class ListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-        let categoryPredicate = NSPredicate(format: "parentCategory.categoryDescription MATCHES %@", (selectedCategory?.categoryDescription)!)
-        
-        if let additionalPredicat = predicate {
-            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicat])
-        } else {
-            request.predicate = categoryPredicate
-        }
-        
-        do {
-            items = try context.fetch(request)
-        } catch {
-            print("Error fetching data from context: \(error)")
-        }
-        tableView.reloadData()
-    }
+//    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+//        let categoryPredicate = NSPredicate(format: "parentCategory.categoryDescription MATCHES %@", (selectedCategory?.categoryDescription)!)
+//
+//        if let additionalPredicat = predicate {
+//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicat])
+//        } else {
+//            request.predicate = categoryPredicate
+//        }
+//
+//        do {
+//            items = try context.fetch(request)
+//        } catch {
+//            print("Error fetching data from context: \(error)")
+//        }
+//        tableView.reloadData()
+//    }
 }
 
 //MARK: - Search Bar Methods
-extension ListViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        let predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@", searchBar.text!)
-        request.sortDescriptors = [NSSortDescriptor(key: "itemDescription", ascending: true)]
-        
-        loadItems(with: request, predicate: predicate)
-    }
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text?.count == 0 {
-            loadItems()
-            DispatchQueue.main.async {
-                searchBar.resignFirstResponder()
-            }
-        }
-    }
-}
+//extension ListViewController: UISearchBarDelegate {
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        let request: NSFetchRequest<Item> = Item.fetchRequest()
+//        let predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@", searchBar.text!)
+//        request.sortDescriptors = [NSSortDescriptor(key: "itemDescription", ascending: true)]
+//
+//        loadItems(with: request, predicate: predicate)
+//    }
+//
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        if searchBar.text?.count == 0 {
+//            loadItems()
+//            DispatchQueue.main.async {
+//                searchBar.resignFirstResponder()
+//            }
+//        }
+//    }
+//}
