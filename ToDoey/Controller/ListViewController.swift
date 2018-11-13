@@ -7,29 +7,33 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class ListViewController: UITableViewController {
-    var items = [Item]()
+    var items: Results<Item>?
+    let realm = try! Realm()
     var selectedCategory: Category? {
         didSet {
-//            loadItems()
+            loadItems()
         }
     }
-    
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     @IBAction func addItem(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         let alert = UIAlertController(title: "Add New Item", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Done", style: .default) { (action) in
-            
-//            let newItem = Item(context: self.context)
-//            newItem.itemDescription = textField.text!
-//            newItem.isChecked = false
-//            newItem.parentCategory = self.selectedCategory
-//            self.items.append(newItem)
-            self.saveItems()
+            if let currentCategory = self.selectedCategory {
+                do {
+                    try self.realm.write {
+                        let newItem = Item()
+                        newItem.itemDescription = textField.text!
+                        currentCategory.items.append(newItem)
+                    }
+                } catch {
+                    print("Error saving new items: \(error)")
+                }
+            }
+            self.tableView.reloadData()
         }
         
         alert.addTextField { (alertTextField) in
@@ -46,53 +50,44 @@ class ListViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return items?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-        let item = items[indexPath.row]
-        cell.textLabel?.text = item.itemDescription
-        
-        if item.isChecked == true {
-            cell.accessoryType = .checkmark
+        if let item = items?[indexPath.row] {
+            cell.textLabel?.text = item.itemDescription
+            
+            if item.isChecked == true {
+                cell.accessoryType = .checkmark
+            } else {
+                cell.accessoryType = .none
+            }
         } else {
-            cell.accessoryType = .none
+            cell.textLabel?.text = "No Items added"
         }
+        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        items[indexPath.row].isChecked = !items[indexPath.row].isChecked
-        saveItems()
+        if let item = items?[indexPath.row] {
+            do {
+                try realm.write {
+                    item.isChecked = !item.isChecked
+                }
+            } catch {
+                print("Error saving done status: \(error)")
+            }
+        }
+        tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func saveItems() {
-        do {
-            try context.save()
-        } catch {
-            print("Error saving context: \(error)")
-        }
+    func loadItems() {
+        items = selectedCategory?.items.sorted(byKeyPath: "itemDescription", ascending: true)
         tableView.reloadData()
     }
-    
-//    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-//        let categoryPredicate = NSPredicate(format: "parentCategory.categoryDescription MATCHES %@", (selectedCategory?.categoryDescription)!)
-//
-//        if let additionalPredicat = predicate {
-//            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicat])
-//        } else {
-//            request.predicate = categoryPredicate
-//        }
-//
-//        do {
-//            items = try context.fetch(request)
-//        } catch {
-//            print("Error fetching data from context: \(error)")
-//        }
-//        tableView.reloadData()
-//    }
 }
 
 //MARK: - Search Bar Methods
