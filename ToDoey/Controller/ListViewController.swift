@@ -91,21 +91,17 @@ class ListViewController: UITableViewController {
 }
 
 //MARK: - Search Bar Methods
-//extension ListViewController: UISearchBarDelegate {
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        let request: NSFetchRequest<Item> = Item.fetchRequest()
-//        let predicate = NSPredicate(format: "itemDescription CONTAINS[cd] %@", searchBar.text!)
-//        request.sortDescriptors = [NSSortDescriptor(key: "itemDescription", ascending: true)]
-//
-//        loadItems(with: request, predicate: predicate)
-//    }
-//
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0 {
-//            loadItems()
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//            }
-//        }
-//    }
-//}
+extension ListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        items = items?.filter("itemDescription CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
+}
