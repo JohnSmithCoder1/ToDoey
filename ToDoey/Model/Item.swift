@@ -12,5 +12,6 @@ import RealmSwift
 class Item: Object {
     @objc dynamic var itemDescription = ""
     @objc dynamic var isChecked = false
+    @objc dynamic var dateCreated: Date?
     var parentCategory = LinkingObjects(fromType: Category.self, property: "items")
 }
